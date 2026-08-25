@@ -1,47 +1,29 @@
 // src/server.js
 import express from 'express';
 import cors from 'cors';
-import pino from 'pino-http';
 import 'dotenv/config';
+import { connectMongoDB } from './db/connectMongoDB.js';
 
+//import midleware handlers
+import { errorHandler } from './middleware/errorHandler.js';
+import { notFoundHandler } from './middleware/notFoundHandler.js';
+import { logger } from './middleware/logger.js';
+
+import notesRoutes from './routes/notesRoutes.js';
 const app = express();
 // Використовуємо значення з .env або дефолтний порт 3000
-const PORT = process.env.PORT ?? 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 // Middleware для парсингу JSON
 app.use(express.json());
 
 // Middleware pino
-app.use(
-  pino({
-    level: 'info',
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        colorize: true,
-        translateTime: 'HH:MM:ss',
-        ignore: 'pid,hostname',
-        messageFormat:
-          '{req.method} {req.url} {res.statusCode} - {responseTime}ms',
-        hideObject: true,
-      },
-    },
-  }),
-);
+app.use(logger);
 
 // Дозволяє запити з будь-яких джерел
 app.use(cors());
 
-// Get notes
-app.get('/notes', (req, res) => {
-  res.status(200).json({ message: 'Retrieved all notes' });
-});
-
-// Конкретна нотатка за id
-app.get('/notes/:noteId', (req, res) => {
-  const { noteId } = req.params;
-  res.status(200).json({ message: `Retrieved note with ID: ${noteId}` });
-});
+app.use(notesRoutes);
 
 //Тест помилки
 app.get('/test-error', () => {
@@ -49,17 +31,13 @@ app.get('/test-error', () => {
 });
 
 // Middleware 404 (після всіх маршрутів)
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
-});
+app.use(notFoundHandler);
 
 // Middleware для обробки помилок (останнє)
-app.use((err, req, res, next) => {
-  console.error('Error:', err.message);
-  res.status(500).json({
-    message: err.message,
-  });
-});
+app.use(errorHandler);
+
+// підключення до MongoDB
+await connectMongoDB();
 
 // Запуск сервера
 app.listen(PORT, () => {
