@@ -25,11 +25,6 @@ app.use(cors());
 
 app.use(notesRoutes);
 
-//Тест помилки
-app.get('/test-error', () => {
-  throw new Error('Simulated server error');
-});
-
 // Middleware 404 (після всіх маршрутів)
 app.use(notFoundHandler);
 
