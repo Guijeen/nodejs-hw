@@ -18,7 +18,7 @@ export const getAllNotesSchema = {
       .messages({
         'any.only': 'Tag must be one of exist tags',
       }),
-    search: Joi.string().trim().allow,
+    search: Joi.string().trim().allow(''),
   }),
 };
 
@@ -39,7 +39,7 @@ export const updateNoteSchema = {
   }),
   [Segments.BODY]: Joi.object({
     title: Joi.string().min(1),
-    content: Joi.string(),
+    content: Joi.string().allow(''),
     tag: Joi.string()
       .valid(...TAGS)
       .messages({
@@ -50,7 +50,7 @@ export const updateNoteSchema = {
 
 export const createNoteSchema = {
   [Segments.BODY]: Joi.object({
-    title: Joi.string().min(1),
+    title: Joi.string().min(1).required,
     content: Joi.string(),
     tag: Joi.string()
       .valid(...TAGS)
