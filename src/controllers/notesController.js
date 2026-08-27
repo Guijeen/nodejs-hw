@@ -8,8 +8,37 @@ function ifError(note) {
 }
 
 export const getAllNotes = async (req, res) => {
-  const notes = await Note.find();
-  res.status(200).json(notes);
+  // Отримуємо параметри пагінації
+  // і задаємо дефолтні значення
+  const { page = 1, perPage = 10, search, tag } = req.query;
+
+  const skip = (page - 1) * perPage;
+  const notesQuery = Note.find();
+
+  // Пошук по частині імені
+  if (search) {
+    notesQuery.where({
+      $or: [
+        { title: { $regex: search, $options: 'i' } },
+        { content: { $regex: search, $options: 'i' } },
+      ],
+    });
+  }
+
+  if (tag) {
+    notesQuery.where('tag').equals(tag);
+  }
+
+  // Виконуємо одразу два запити паралельно
+  const [totalItems, notes] = await Promise.all([
+    notesQuery.clone().countDocuments(),
+    notesQuery.skip(skip).limit(perPage),
+  ]);
+
+  // Обчислюємо загальну кількість «сторінок»
+  const totalPages = Math.ceil(totalItems / perPage);
+
+  res.status(200).json({ page, perPage, totalPages, totalItems, notes });
 };
 
 export const getNoteById = async (req, res) => {
