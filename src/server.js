@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import { connectMongoDB } from './db/connectMongoDB.js';
+import cookieParser from 'cookie-parser';
 
 //import midleware handlers
 import { errorHandler } from './middleware/errorHandler.js';
@@ -10,6 +11,7 @@ import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { logger } from './middleware/logger.js';
 
 import notesRoutes from './routes/notesRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 import { errors } from 'celebrate';
 
@@ -26,6 +28,9 @@ app.use(logger);
 // Дозволяє запити з будь-яких джерел
 app.use(cors());
 
+app.use(cookieParser());
+
+app.use(authRoutes);
 app.use(notesRoutes);
 
 // Middleware 404 (після всіх маршрутів)
