@@ -1,4 +1,4 @@
-import { User } from '../models/users.js';
+import { User } from '../models/user.js';
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
 import { createSession, setSessionCookies } from '../services/auth.js';
