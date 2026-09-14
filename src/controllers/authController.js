@@ -42,7 +42,7 @@ export const loginUser = async (req, res) => {
 
   const correctPassword = await bcrypt.compare(password, user.password);
   if (!correctPassword) {
-    throw createHttpError('401', 'Invalid credentials');
+    throw createHttpError(401, 'Invalid credentials');
   }
 
   // Видаляємо стару сесію користувача
