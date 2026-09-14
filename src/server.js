@@ -12,7 +12,7 @@ import { logger } from './middleware/logger.js';
 
 import notesRoutes from './routes/notesRoutes.js';
 import authRoutes from './routes/authRoutes.js';
-import userRoutes from './routes/userRouter.js';
+import userRoutes from './routes/userRoutes.js';
 
 import { errors } from 'celebrate';
 

@@ -1,7 +1,7 @@
 // src/controllers/userController.js
 
 import createHttpError from 'http-errors';
-import { saveFileToCloudinary } from '../utils/aveFileToCloudinary.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 import { User } from '../models/user.js';
 
 export const updateUserAvatar = async (req, res, next) => {
