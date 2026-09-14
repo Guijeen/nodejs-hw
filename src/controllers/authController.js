@@ -15,7 +15,7 @@ export const registerUser = async (req, res) => {
 
   const ifUserExist = await User.findOne({ email });
   if (ifUserExist) {
-    throw createHttpError('400', 'Email in use');
+    throw createHttpError(400, 'Email in use');
   }
 
   const hashingPassword = await bcrypt.hash(password, 10);
@@ -37,7 +37,7 @@ export const loginUser = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw createHttpError('401', 'Invalid credentials');
+    throw createHttpError(401, 'Invalid credentials');
   }
 
   const correctPassword = await bcrypt.compare(password, user.password);
