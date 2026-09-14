@@ -12,6 +12,7 @@ import { logger } from './middleware/logger.js';
 
 import notesRoutes from './routes/notesRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRouter.js';
 
 import { errors } from 'celebrate';
 
@@ -32,6 +33,7 @@ app.use(cookieParser());
 
 app.use(authRoutes);
 app.use(notesRoutes);
+app.use(userRoutes);
 
 // Middleware 404 (після всіх маршрутів)
 app.use(notFoundHandler);
